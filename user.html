@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopEase - Users</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 10%;
+      background-color: #4a90e2;
+      color: #fff;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: #f0e9e9;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover,
+    nav ul li a.active {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .user-table th, .user-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      text-align: left;
+    }
+
+    .user-table th {
+      background-color: #2874f0;
+      color: white;
+      font-weight: 600;
+    }
+
+    .user-table tr:hover {
+      background-color: #f1f7ff;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">ShopEase</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="product.html">Products</a></li>
+        <li><a href="admin.html">Admin Panel</a></li>
+        <li><a href="users.html" class="active">Users</a></li>
+        <li><a href="signup.html">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Users / Orders</h2>
+
+    <table class="user-table" id="user-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Product</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody id="user-data">
+        <tr><td colspan="4" class="no-data">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    fetch("http://localhost:3000/users")
+      .then(res => res.json())
+      .then(users => {
+        const tbody = document.getElementById("user-data");
+
+        if (users.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" class="no-data">No users found.</td></tr>`;
+        } else {
+          tbody.innerHTML = "";
+          users.forEach(user => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${user.name}</td>
+                <td>${user.address}</td>
+                <td>${user.productName || "-"}</td>
+                <td>$${(user.productPrice || 0).toFixed(2)}</td>
+              </tr>
+            `;
+          });
+        }
+      })
+      .catch(err => {
+        document.getElementById("user-data").innerHTML = `<tr><td colspan="4" class="no-data">Failed to load data.</td></tr>`;
+        console.error("Error loading users:", err);
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopEase - Payment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 10%;
+      background-color: #4a90e2;
+      color: #fff;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: #f0e9e9;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    nav ul li a.active,
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .payment-card {
+      background: #fff;
+      width: 90%;
+      max-width: 900px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      transform: perspective(1000px);
+      transition: transform 0.3s ease;
+    }
+
+    .payment-card:hover {
+      transform: perspective(1000px) rotateX(1deg) rotateY(1deg);
+    }
+
+    .left, .right {
+      flex: 1 1 50%;
+      padding: 40px;
+      box-sizing: border-box;
+    }
+
+    .left {
+      background: linear-gradient(135deg, #2874f0, #0043a4);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+    }
+
+    .left h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .left i {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+
+    .right h3 {
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+      transition: 0.2s;
+    }
+
+    .input-group input:focus {
+      border-color: #2874f0;
+      box-shadow: 0 0 5px #2874f0;
+    }
+
+    .payment-methods label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .payment-methods input {
+      margin-right: 10px;
+    }
+
+    .payment-methods i,
+    .payment-methods svg {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+
+    .btn-pay {
+      width: 100%;
+      padding: 14px;
+      background: #2874f0;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 10px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-pay:hover {
+      background: #174fb1;
+    }
+
+    .success-msg {
+      margin-top: 15px;
+      background: #d4edda;
+      padding: 12px;
+      color: #155724;
+      border-radius: 10px;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .error-msg {
+      margin-top: 15px;
+      background: #f8d7da;
+      padding: 12px;
+      color: #721c24;
+      border-radius: 10px;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .upi-input {
+      display: none;
+      margin-top: 10px;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px); }
+      to {opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .payment-card {
+        flex-direction: column;
+      }
+
+      .left, .right {
+        flex: 1 1 100%;
+        border-radius: 0;
+        padding: 25px;
+      }
+
+      .left {
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">ShopEase</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="product.html">Products</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="signup.html">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Payment Page Container -->
+  <div style="display: flex; justify-content: center; padding: 40px 20px;">
+    <div class="payment-card">
+      <div class="left">
+        <i class="fas fa-credit-card"></i>
+        <h2>Secure Payment</h2>
+        <p>Your transactions are safe and encrypted with us.</p>
+      </div>
+      <div class="right">
+        <h3>Billing Details</h3>
+
+        <div class="input-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="John Doe" />
+        </div>
+        <div class="input-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" placeholder="123 Street, City" />
+        </div>
+        <div class="input-group">
+          <label for="pincode">Pincode</label>
+          <input type="text" id="pincode" placeholder="123456" />
+        </div>
+
+        <div class="payment-methods">
+            <label>
+              <input type="radio" name="pay" value="Cash" onclick="togglePaymentFields()" checked />
+              <img src="https://www.livemint.com/lm-img/img/2024/12/11/600x338/income_tax_notice_1733882902740_1733882903000.jpg" alt="Cash" style="width: 24px; margin-right: 10px;" />
+              Cash on Delivery
+            </label>
+            <label>
+              <input type="radio" name="pay" value="Online" onclick="togglePaymentFields()" />
+              <img src="https://static.vecteezy.com/system/resources/previews/017/221/853/original/google-pay-logo-transparent-free-png.png" alt="Google Pay" style="width: 24px; margin-right: 10px;" />
+              Online Payment
+            </label>
+        </div>
+
+        <div class="input-group" id="amount-group">
+          <label for="amount">Enter Amount</label>
+          <input type="number" id="amount" placeholder="Amount" />
+        </div>
+
+        <div class="upi-input" id="upi-input">
+          <div class="input-group">
+            <label for="upi-id">UPI ID</label>
+            <input type="text" id="upi-id" placeholder="your-upi-id@upi" required />
+          </div>
+        </div>
+
+        <button class="btn-pay" onclick="payNow()">Order Placed</button>
+        <div class="success-msg" id="success">✅ Payment Successful! Thank you for shopping with us.</div>
+        <div class="error-msg" id="error">❌ Please fill in all the details before placing your order.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Predefined list of UPI IDs for uniqueness check
+    const existingUpiIds = ['john123@upi', 'jane456@paytm'];
+
+    function togglePaymentFields() {
+      const paymentMethod = document.querySelector('input[name="pay"]:checked').value;
+
+      if (paymentMethod === "Online") {
+        document.getElementById("amount-group").style.display = 'block';
+        document.getElementById("upi-input").style.display = 'block';
+      } else {
+        document.getElementById("amount-group").style.display = 'none';
+        document.getElementById("upi-input").style.display = 'none';
+      }
+    }
+
+    function payNow() {
+  const name = document.getElementById("name").value;
+  const address = document.getElementById("address").value;
+  const pincode = document.getElementById("pincode").value;
+  const paymentMethod = document.querySelector('input[name="pay"]:checked').value;
+  const amount = paymentMethod === 'Online' ? document.getElementById("amount").value : null;
+
+  if (!name || !address || !pincode || (paymentMethod === 'Online' && !amount)) {
+    document.getElementById("error").style.display = "block";
+    return;
+  }
+
+  if (paymentMethod === 'Online') {
+    const upiId = document.getElementById("upi-id").value;
+    const upiRegex = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.)+(upi|paytm|okaxis|gpay)$/;
+
+    if (!upiRegex.test(upiId)) {
+      alert("Please enter a valid UPI ID (e.g., username@upi)");
+      return;
+    }
+  }
+
+  // Create the payload to send to the server
+  const paymentData = {
+    name: name,
+    address: address,
+    pincode: pincode,
+    productName: "Sample Product", // Example product name
+    productPrice: amount || 0, // Set amount for online payment
+    paymentMethod: paymentMethod,
+    upiId: paymentMethod === 'Online' ? document.getElementById("upi-id").value : varchar(250),
+  };
+
+  // Send the payment data to the backend
+  fetch('http://localhost:3000/order', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(paymentData),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === "Order placed successfully!") {
+        document.getElementById("success").style.display = "block";
+        document.getElementById("error").style.display = "none";
+      } else {
+        document.getElementById("error").style.display = "block";
+      }
+    })
+    .catch(err => {
+      console.error("Error placing order:", err);
+      document.getElementById("error").style.display = "block";
+    });
+    }
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cart - ShopEase</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f7f8fc;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 10%;
+      background-color: #4a90e2;
+      color: #fff;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .cart-section {
+      padding: 60px 10%;
+      text-align: center;
+    }
+
+    .cart-section h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #4a90e2;
+    }
+
+    .cart-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .cart-item {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      text-align: left;
+    }
+
+    .cart-item img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .cart-item h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #4a90e2;
+      margin-bottom: 10px;
+    }
+
+    .quantity {
+      margin-bottom: 10px;
+    }
+
+    .quantity input {
+      width: 50px;
+      padding: 5px;
+      text-align: center;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .btn-container button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-container button:hover {
+      background-color: #357abd;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #4a90e2;
+      color: white;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">ShopEase</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="product.html">Products</a></li>
+        <li><a href="cart.html" class="active">Cart</a></li>
+        <li><a href="signup.html">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="cart-section">
+    <h1>Your Cart</h1>
+    <div class="cart-items" id="cartItems">
+      <!-- Cart items will be displayed here -->
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 ShopEase. All rights reserved.</p>
+  </footer>
+
+  <script>
+    window.onload = function () {
+      displayCartItems();
+    };
+
+    function displayCartItems() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsContainer = document.getElementById('cartItems');
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p>Your cart is empty!</p>';
+      } else {
+        cartItemsContainer.innerHTML = ''; // Clear cart items before re-rendering
+
+        cart.forEach((product, index) => {
+          const item = document.createElement('div');
+          item.classList.add('cart-item');
+
+          item.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" />
+            <h3>${product.name}</h3>
+            <p>Category: ${product.category}</p>
+            <p class="price">₹${product.price}</p>
+
+            <div class="quantity">
+              <label for="quantity-${index}">Quantity: </label>
+              <input type="number" id="quantity-${index}" value="${product.quantity}" min="1" onchange="updateQuantity(${index}, this.value)" />
+            </div>
+
+            <div class="btn-container">
+              <button onclick="removeItem(${index})">Remove</button>
+              <button onclick="buyNow(${index})">Buy Now</button>
+            </div>
+          `;
+
+          cartItemsContainer.appendChild(item);
+        });
+      }
+    }
+
+    function removeItem(index) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1); // Remove item from cart array
+      localStorage.setItem('cart', JSON.stringify(cart)); // Update localStorage
+
+      displayCartItems(); // Update the cart display after removal
+    }
+
+    function updateQuantity(index, quantity) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart[index].quantity = quantity; // Update the quantity of the product
+      localStorage.setItem('cart', JSON.stringify(cart)); // Save updated cart to localStorage
+    }
+
+    function buyNow(index) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const product = cart[index];
+
+      // Save the product to localStorage (or sessionStorage) to use on the summary page
+      localStorage.setItem('productForSummary', JSON.stringify(product));
+
+      // Redirect to the payment page
+      window.location.href = 'payment.html';  // Redirect to the payment page
+    }
+  </script>
+</body>
+</html>

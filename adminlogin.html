@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup/Login Page</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #007bff, #00c6ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 123, 255, 0.2);
+      width: 380px;
+    }
+
+    .form-box {
+      display: none;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 1rem;
+    }
+
+    input, select {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      width: 100%;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    p {
+      text-align: center;
+    }
+
+    span {
+      color: #007bff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #otp-demo-text {
+      text-align: center;
+      color: green;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Login Form -->
+    <div class="form-box" id="login-box">
+      <h2>Admin Login</h2>
+      <input type="email" placeholder="Email" id="login-email">
+      <input type="password" placeholder="Password" id="login-password">
+      <button onclick="window.location.href='admin.html'">Login</button>
+      <p>Don't have an account? <span onclick="showSignup()">Sign Up</span></p>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="form-box" id="signup-box" style="display: flex;">
+      <h2>Admin Sign Up</h2>
+      <input type="text" placeholder="Full Name" id="signup-name">
+      <input type="email" placeholder="Email" id="signup-email">
+      <input type="password" placeholder="Password" id="signup-password">
+      <input type="text" placeholder="Phone Number" id="signup-phone">
+      <input type="text" placeholder="Address" id="signup-address">
+
+      <select id="signup-gender">
+        <option value="">Select Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+
+      <select id="signup-city">
+        <option value="">Select City</option>
+        <option>New York</option>
+        <option>London</option>
+        <option>Toronto</option>
+        <option>Sydney</option>
+        <option>Mumbai</option>
+        <option>Los Angeles</option>
+        <option>Melbourne</option>
+        <option>Vancouver</option>
+        <option>Delhi</option>
+        <option>Bangalore</option>
+      </select>
+
+      <select id="signup-state">
+        <option value="">Select State/Country</option>
+        <option>New York, USA</option>
+        <option>California, USA</option>
+        <option>Ontario, Canada</option>
+        <option>British Columbia, Canada</option>
+        <option>Maharashtra, India</option>
+        <option>Delhi, India</option>
+        <option>Karnataka, India</option>
+        <option>New South Wales, Australia</option>
+        <option>Victoria, Australia</option>
+        <option>England, UK</option>
+      </select>
+
+      <button onclick="sendOTP()">Send OTP</button>
+      <input type="text" placeholder="Enter OTP" id="signup-otp" style="display: none;">
+      <button id="verify-btn" style="display: none;" onclick="showLogin()">Sign-up</button>
+
+      <p>Already have an account? <span onclick="showLogin()">Login</span></p>
+    </div>
+  </div>
+
+  <script>
+    function showLogin() {
+      document.getElementById("signup-box").style.display = "none";
+      document.getElementById("login-box").style.display = "flex";
+    }
+
+    function showSignup() {
+      document.getElementById("login-box").style.display = "none";
+      document.getElementById("signup-box").style.display = "flex";
+    }
+
+    let verificationCode = "";
+
+    // Random OTP Generator
+    function generateRandomOTP() {
+      const length = 6;  // Length of the OTP
+      const characters = '0123456789';  // OTP will only contain numbers
+
+      let otp = '';
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        otp += characters[randomIndex];
+      }
+
+      return otp;
+    }
+
+    // Send OTP
+    function sendOTP() {
+      const name = document.getElementById("signup-name").value;
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+      const phone = document.getElementById("signup-phone").value;
+      const address = document.getElementById("signup-address").value;
+      const gender = document.getElementById("signup-gender").value;
+      const city = document.getElementById("signup-city").value;
+      const state = document.getElementById("signup-state").value;
+
+      if (!name || !email || !phone || phone.length < 10 || !password || !address || !gender || !city || !state) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
+
+      // Generate random OTP
+      verificationCode = generateRandomOTP();
+
+      alert("OTP sent: " + verificationCode);
+
+      document.getElementById("signup-otp").style.display = "block";
+      document.getElementById("verify-btn").style.display = "inline-block";
+    }
+
+    // Verify OTP
+    async function verifyOTP() {
+      const userInput = document.getElementById("signup-otp").value;
+      if (userInput === verificationCode) {
+        const userData = {
+          name: document.getElementById("signup-name").value,
+          email: document.getElementById("signup-email").value,
+          password: document.getElementById("signup-password").value
+        };
+
+        // Send signup data to backend
+        try {
+          const response = await fetch('http://localhost:5000/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+          });
+
+          const result = await response.json();
+          alert(result.message);
+
+          if (response.ok) {
+            showLogin();
+          }
+        } catch (error) {
+          alert('Error with signup');
+        }
+      } else {
+        alert("Incorrect OTP");
+      }
+    }
+
+    // Login function
+    async function login() {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      if (!email || !password) {
+        alert("Please fill in both fields.");
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:5000/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json();
+        alert(result.message);
+      } catch (error) {
+        alert('Error with login');
+      }
+    }
+  </script>
+</body>
+</html>
